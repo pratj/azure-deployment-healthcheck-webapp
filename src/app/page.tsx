@@ -1,7 +1,5 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import { headers } from "next/headers";
-import type { NextRequest } from "next/server";
 
 // Helper to get NEXT_PUBLIC_ env vars (only available at build time)
 const getPublicEnvVars = () => {
@@ -14,19 +12,11 @@ const getPublicEnvVars = () => {
   return env;
 };
 
-export default async function Home() {
-  // Get request headers (works in server components)
-  const hdrs = await headers();
-  const host = hdrs.get("host") || "Unknown";
-  const forwardedFor = hdrs.get("x-forwarded-for") || "Unknown";
-  const forwardedProto = hdrs.get("x-forwarded-proto") || "Unknown";
-  const realIp = hdrs.get("x-real-ip") || "Unknown";
-
+export default function Home() {
   // Azure App Service env vars (will be undefined locally)
   const appServiceName = process.env.WEBSITE_SITE_NAME || "N/A (Local)";
   const instanceId = process.env.WEBSITE_INSTANCE_ID || "N/A (Local)";
   const buildTime = new Date().toLocaleString("en-US", { timeZone: "UTC" });
-  const env = process.env.NODE_ENV || "development";
   const publicEnv = getPublicEnvVars();
 
   return (
@@ -51,10 +41,10 @@ export default async function Home() {
         <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center', marginBottom: 16 }}>
           <span style={{
             background: '#e3f2fd', color: '#1976d2', borderRadius: 8, padding: '4px 12px', fontWeight: 600, fontSize: 14
-          }}>Environment: Development</span>
+          }}>Environment: Production</span>
           <span style={{
             background: '#e8f5e9', color: '#388e3c', borderRadius: 8, padding: '4px 12px', fontWeight: 600, fontSize: 14
-          }}>Status:  [32m [1m [0m🟢 Running</span>
+          }}>Status: 🟢 Running</span>
           <span style={{
             background: '#f3e5f5', color: '#7b1fa2', borderRadius: 8, padding: '4px 12px', fontWeight: 600, fontSize: 14
           }}>Build: {buildTime} UTC</span>
@@ -69,20 +59,14 @@ export default async function Home() {
         </div>
         <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', marginBottom: 16 }}>
           <div style={{ minWidth: 200 }}>
-            <b>Host:</b> {host}
+            <b>Deployment Type:</b> Static Web App
           </div>
           <div style={{ minWidth: 200 }}>
-            <b>X-Forwarded-For (Client IP):</b> {forwardedFor}
-          </div>
-          <div style={{ minWidth: 200 }}>
-            <b>X-Real-IP:</b> {realIp}
-          </div>
-          <div style={{ minWidth: 200 }}>
-            <b>X-Forwarded-Proto (Protocol):</b> {forwardedProto}
+            <b>Build Output:</b> Static Export
           </div>
         </div>
         <p style={{ fontSize: 12, color: '#888', marginTop: 8 }}>
-          (If running locally, Azure-specific info will show as N/A. On Azure, these will reflect your App Service details.)
+          This is a static export of the Next.js application deployed to Azure Static Web Apps.
         </p>
       </section>
       <section style={{

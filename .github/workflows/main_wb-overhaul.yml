@@ -29,11 +29,21 @@ jobs:
           npm run build --if-present
           npm run test --if-present
 
+      - name: Prepare build output for Azure Static Web Apps
+        run: |
+          # Create build directory and copy static files
+          mkdir -p build
+          cp -r out/* build/
+          # Copy any additional static assets if needed
+          if [ -d "public" ]; then
+            cp -r public/* build/
+          fi
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: build
 
   deploy:
     runs-on: ubuntu-latest
