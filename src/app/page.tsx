@@ -12,25 +12,11 @@ const getPublicEnvVars = () => {
   return env;
 };
 
-// Server-side data fetching (works in hybrid deployment)
-async function getServerData() {
-  const timestamp = new Date().toISOString();
-  const serverInfo = {
-    timestamp,
-    nodeEnv: process.env.NODE_ENV || 'development',
-    isServer: true,
-    buildTime: new Date().toLocaleString("en-US", { timeZone: "UTC" })
-  };
-  return serverInfo;
-}
-
-export default async function Home() {
-  // Server-side data fetching (this runs on the server in hybrid mode)
-  const serverData = await getServerData();
-  
+export default function Home() {
   // Azure App Service env vars (will be undefined locally)
   const appServiceName = process.env.WEBSITE_SITE_NAME || "N/A (Local)";
   const instanceId = process.env.WEBSITE_INSTANCE_ID || "N/A (Local)";
+  const buildTime = new Date().toLocaleString("en-US", { timeZone: "UTC" });
   const publicEnv = getPublicEnvVars();
 
   return (
@@ -55,13 +41,13 @@ export default async function Home() {
         <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center', marginBottom: 16 }}>
           <span style={{
             background: '#e3f2fd', color: '#1976d2', borderRadius: 8, padding: '4px 12px', fontWeight: 600, fontSize: 14
-          }}>Environment: {serverData.nodeEnv}</span>
+          }}>Environment: Production</span>
           <span style={{
             background: '#e8f5e9', color: '#388e3c', borderRadius: 8, padding: '4px 12px', fontWeight: 600, fontSize: 14
-          }}>Status: 🟢 Running (Hybrid)</span>
+          }}>Status: 🟢 Running</span>
           <span style={{
             background: '#f3e5f5', color: '#7b1fa2', borderRadius: 8, padding: '4px 12px', fontWeight: 600, fontSize: 14
-          }}>Build: {serverData.buildTime} UTC</span>
+          }}>Build: {buildTime} UTC</span>
         </div>
         <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', marginBottom: 16 }}>
           <div style={{ minWidth: 200 }}>
@@ -73,14 +59,14 @@ export default async function Home() {
         </div>
         <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', marginBottom: 16 }}>
           <div style={{ minWidth: 200 }}>
-            <b>Deployment Type:</b> Hybrid Next.js
+            <b>Deployment Type:</b> Static Web App
           </div>
           <div style={{ minWidth: 200 }}>
-            <b>Server Timestamp:</b> {serverData.timestamp}
+            <b>Build Output:</b> Static Export
           </div>
         </div>
         <p style={{ fontSize: 12, color: '#888', marginTop: 8 }}>
-          This is a hybrid Next.js application with server-side rendering capabilities.
+          This is a static export of the Next.js application deployed to Azure Static Web Apps.
         </p>
       </section>
       <section style={{
@@ -117,42 +103,6 @@ export default async function Home() {
         </table>
         <p style={{ fontSize: 12, color: '#888', marginTop: 8 }}>
           Only variables prefixed with <b>NEXT_PUBLIC_</b> are exposed to the browser. See <a href="https://nextjs.org/docs/pages/guides/environment-variables" target="_blank" rel="noopener noreferrer">Next.js docs</a>.
-        </p>
-      </section>
-      <section style={{
-        background: '#f5f5f5',
-        border: '1px solid #e0e0e0',
-        borderRadius: 12,
-        padding: 24,
-        maxWidth: 700,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.02)'
-      }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>API Testing</h2>
-        <p style={{ marginBottom: 16, fontSize: 14 }}>
-          Test the API route functionality (only works in hybrid deployment):
-        </p>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <a 
-            href="/api/health" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ 
-              color: '#1976d2', 
-              fontWeight: 500, 
-              textDecoration: 'none',
-              padding: '8px 16px',
-              background: '#e3f2fd',
-              borderRadius: 6,
-              border: '1px solid #1976d2'
-            }}
-          >
-            Test API Route
-          </a>
-        </div>
-        <p style={{ fontSize: 12, color: '#888', marginTop: 8 }}>
-          This API route demonstrates server-side functionality in hybrid deployment.
         </p>
       </section>
       <section style={{
